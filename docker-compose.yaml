@@ -1,0 +1,94 @@
+version: "3.9"
+
+services:
+
+  mysql:
+    image: mysql:8.0.25
+    container_name: mysql
+    volumes:
+      - ~/data/mysql:/var/lib/mysql
+    networks:
+      - backend
+    ports:
+      - "3306:3306"
+      - "33060:33060"
+    environment:
+      - MYSQL_ROOT_PASSWORD=999
+
+  redis:
+    image: redis:6.2.4
+    container_name: redis
+    volumes:
+      - ~/data/redis:/data
+    networks:
+      - backend
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: postgres:9.4
+    volumes:
+      - ~/data/postgres:/var/lib/postgresql/data
+    networks:
+      - backend
+    deploy:
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.role==manager"
+
+  elasticsearch:
+    image: elasticsearch:7.13.4
+    container_name: elasticsearch
+    volumes:
+      - ~/data/elasticsearch:/usr/share/elasticsearch/data
+    networks:
+      - backend
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      # "DISCOVERY_TYPE"
+      - "discovery.type=single-node"
+      # - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "xpack.security.enabled=true"
+
+  kibana:
+    image: kibana:7.13.4
+    container_name: kibana
+    networks:
+      - backend
+    ports:
+      - "5601:5601"
+    volumes:
+      - ~/data/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+    environment: #https://www.elastic.co/guide/en/kibana/current/docker.html#docker-defaults
+      #SERVER_NAME: kibana.example.org
+      - "ELASTICSEARCH_HOSTS=http://10.13.115.52:9200"
+    depends_on:
+      - elasticsearch
+
+  # docker run -d --name=grafana -p 3000:3000 -v ~/data/grafana:/var/lib/grafana grafana/grafana
+  grafana:
+    image: grafana/grafana:8.0.5
+    container_name: grafana
+    networks:
+      - backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ~/data/grafana:/var/lib/grafana
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    networks:
+      - backend
+    ports:
+      - "9090:9090"
+    volumes:
+      - ~/data/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ~/data/prometheus:/prometheus
+
+networks:
+  backend:
