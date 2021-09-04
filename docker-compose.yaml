@@ -3,7 +3,7 @@ version: "3.9"
 services:
 
   mysql:
-    image: mysql:8.0.25
+    image: mysql:8.0.26
     container_name: mysql
     volumes:
       - ~/data/mysql:/var/lib/mysql
@@ -16,7 +16,7 @@ services:
       - MYSQL_ROOT_PASSWORD=999
 
   redis:
-    image: redis:6.2.4
+    image: redis:6.2.5
     container_name: redis
     volumes:
       - ~/data/redis:/data
@@ -26,7 +26,7 @@ services:
       - "6379:6379"
 
   postgres:
-    image: postgres:9.4
+    image: postgres:13.4
     volumes:
       - ~/data/postgres:/var/lib/postgresql/data
     networks:
@@ -38,7 +38,7 @@ services:
           - "node.role==manager"
 
   elasticsearch:
-    image: elasticsearch:7.13.4
+    image: elasticsearch:7.14.1
     container_name: elasticsearch
     volumes:
       - ~/data/elasticsearch:/usr/share/elasticsearch/data
@@ -54,7 +54,7 @@ services:
       - "xpack.security.enabled=true"
 
   kibana:
-    image: kibana:7.13.4
+    image: kibana:7.14.1
     container_name: kibana
     networks:
       - backend
@@ -70,7 +70,7 @@ services:
 
   # docker run -d --name=grafana -p 3000:3000 -v ~/data/grafana:/var/lib/grafana grafana/grafana
   grafana:
-    image: grafana/grafana:8.0.5
+    image: grafana/grafana:8.1.2
     container_name: grafana
     networks:
       - backend
@@ -80,7 +80,7 @@ services:
       - ~/data/grafana:/var/lib/grafana
 
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:v2.29.2
     container_name: prometheus
     networks:
       - backend
