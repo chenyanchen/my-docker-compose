@@ -1,14 +1,15 @@
 version: "3.9"
 
 services:
-
   mysql:
     image: mysql:8.0.26
     container_name: mysql
     volumes:
       - ~/data/mysql:/var/lib/mysql
     networks:
-      - backend
+      backend:
+        aliases:
+          - mysql
     ports:
       - "3306:3306"
       - "33060:33060"
@@ -21,21 +22,23 @@ services:
     volumes:
       - ~/data/redis:/data
     networks:
-      - backend
+      backend:
+        aliases:
+          - redis
     ports:
       - "6379:6379"
 
   postgres:
     image: postgres:13.4
+    container_name: postgres
     volumes:
       - ~/data/postgres:/var/lib/postgresql/data
     networks:
-      - backend
-    deploy:
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.role==manager"
+      backend:
+        aliases:
+          - postgres
+    ports:
+      - "5432:5432"
 
   elasticsearch:
     image: elasticsearch:7.14.1
@@ -43,12 +46,13 @@ services:
     volumes:
       - ~/data/elasticsearch:/usr/share/elasticsearch/data
     networks:
-      - backend
+      backend:
+        aliases:
+          - elasticsearch
     ports:
       - "9200:9200"
       - "9300:9300"
     environment:
-      # "DISCOVERY_TYPE"
       - "discovery.type=single-node"
       # - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "xpack.security.enabled=true"
@@ -57,23 +61,26 @@ services:
     image: kibana:7.14.1
     container_name: kibana
     networks:
-      - backend
+      backend:
+        aliases:
+          - kibana
     ports:
       - "5601:5601"
     volumes:
       - ~/data/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
     environment: #https://www.elastic.co/guide/en/kibana/current/docker.html#docker-defaults
       #SERVER_NAME: kibana.example.org
-      - "ELASTICSEARCH_HOSTS=http://10.13.115.52:9200"
+      - "ELASTICSEARCH_HOSTS=http://elasticsearch:9200"
     depends_on:
       - elasticsearch
 
-  # docker run -d --name=grafana -p 3000:3000 -v ~/data/grafana:/var/lib/grafana grafana/grafana
   grafana:
     image: grafana/grafana:8.1.2
     container_name: grafana
     networks:
-      - backend
+      backend:
+        aliases:
+          - grafana
     ports:
       - "3000:3000"
     volumes:
@@ -83,7 +90,9 @@ services:
     image: prom/prometheus:v2.29.2
     container_name: prometheus
     networks:
-      - backend
+      backend:
+        aliases:
+          - prometheus
     ports:
       - "9090:9090"
     volumes:
@@ -92,3 +101,4 @@ services:
 
 networks:
   backend:
+    name: backend
