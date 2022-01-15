@@ -3,9 +3,10 @@ version: "3.9"
 services:
   mysql:
     image: mysql:8.0.27
+    platform: linux/amd64
     container_name: mysql
     volumes:
-      - ~/data/mysql:/var/lib/mysql
+      - $HOME/data/mysql:/var/lib/mysql
     networks:
       backend:
         aliases:
@@ -20,7 +21,7 @@ services:
     image: redis:6.2.6
     container_name: redis
     volumes:
-      - ~/data/redis:/data
+      - $HOME/data/redis:/data
     networks:
       backend:
         aliases:
@@ -32,7 +33,7 @@ services:
     image: postgres:14.1
     container_name: postgres
     volumes:
-      - ~/data/postgres:/var/lib/postgresql/data
+      - $HOME/data/postgres:/var/lib/postgresql/data
     networks:
       backend:
         aliases:
@@ -41,12 +42,13 @@ services:
       - "5432:5432"
     environment:
       - "POSTGRES_PASSWORD=999"
+  #      - "PGDATA=/var/lib/postgresql/data"
 
   elasticsearch:
     image: elasticsearch:7.16.3
     container_name: elasticsearch
     volumes:
-      - ~/data/elasticsearch:/usr/share/elasticsearch/data
+      - $HOME/data/elasticsearch:/usr/share/elasticsearch/data
     networks:
       backend:
         aliases:
@@ -69,7 +71,7 @@ services:
     ports:
       - "5601:5601"
       #volumes:
-      #- ~/data/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+      #- $HOME/data/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
     environment: #https://www.elastic.co/guide/en/kibana/current/docker.html#docker-defaults
       #SERVER_NAME: kibana.example.org
       - "ELASTICSEARCH_HOSTS=http://elasticsearch:9200"
@@ -86,7 +88,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ~/data/grafana:/var/lib/grafana
+      - $HOME/data/grafana:/var/lib/grafana
 
   prometheus:
     image: prom/prometheus:v2.32.1
@@ -98,8 +100,8 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ~/data/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ~/data/prometheus:/prometheus
+      - $HOME/data/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - $HOME/data/prometheus:/prometheus
 
 networks:
   backend:
