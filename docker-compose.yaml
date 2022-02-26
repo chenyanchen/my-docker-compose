@@ -30,7 +30,7 @@ services:
       - "6379:6379"
 
   postgres:
-    image: postgres:14.1
+    image: postgres:14.2
     container_name: postgres
     volumes:
       - $HOME/data/postgres:/var/lib/postgresql/data
@@ -45,7 +45,7 @@ services:
   #      - "PGDATA=/var/lib/postgresql/data"
 
   elasticsearch:
-    image: elasticsearch:7.16.3
+    image: elasticsearch:8.0.0
     container_name: elasticsearch
     volumes:
       - $HOME/data/elasticsearch:/usr/share/elasticsearch/data
@@ -62,7 +62,7 @@ services:
       #- "xpack.security.enabled=true"
 
   kibana:
-    image: kibana:7.16.3
+    image: kibana:8.0.0
     container_name: kibana
     networks:
       backend:
@@ -79,7 +79,7 @@ services:
       - elasticsearch
 
   grafana:
-    image: grafana/grafana:8.3.3
+    image: grafana/grafana:8.4.2
     container_name: grafana
     networks:
       backend:
@@ -91,7 +91,7 @@ services:
       - $HOME/data/grafana:/var/lib/grafana
 
   prometheus:
-    image: prom/prometheus:v2.32.1
+    image: prom/prometheus:v2.33.4
     container_name: prometheus
     networks:
       backend:
