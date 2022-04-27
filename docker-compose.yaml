@@ -79,7 +79,7 @@ services:
       - elasticsearch
 
   grafana:
-    image: grafana/grafana:8.4.2
+    image: grafana/grafana:8.5.0
     container_name: grafana
     networks:
       backend:
@@ -91,7 +91,7 @@ services:
       - $HOME/data/grafana:/var/lib/grafana
 
   prometheus:
-    image: prom/prometheus:v2.34.0
+    image: prom/prometheus:v2.35.0
     container_name: prometheus
     networks:
       backend:
