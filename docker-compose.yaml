@@ -1,8 +1,8 @@
-version: "3.9"
-
 services:
+  # elasticsearch: https://github.com/deviantony/docker-elk
+
   mysql:
-    image: mysql:8.0.29
+    image: mysql
     platform: linux/amd64
     container_name: mysql
     volumes:
@@ -14,11 +14,12 @@ services:
     ports:
       - "3306:3306"
       - "33060:33060"
+    restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD=999
+      MYSQL_ROOT_PASSWORD: example
 
   redis:
-    image: redis:7.0.0
+    image: redis
     container_name: redis
     volumes:
       - $HOME/data/redis:/data
@@ -30,7 +31,7 @@ services:
       - "6379:6379"
 
   postgres:
-    image: postgres:14.2
+    image: postgres
     container_name: postgres
     volumes:
       - $HOME/data/postgres:/var/lib/postgresql/data
@@ -44,42 +45,8 @@ services:
       - "POSTGRES_PASSWORD=999"
   #      - "PGDATA=/var/lib/postgresql/data"
 
-  elasticsearch:
-    image: elasticsearch:8.2.0
-    container_name: elasticsearch
-    volumes:
-      - $HOME/data/elasticsearch:/usr/share/elasticsearch/data
-    networks:
-      backend:
-        aliases:
-          - elasticsearch
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    environment:
-      - "discovery.type=single-node"
-      #- "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      #- "xpack.security.enabled=true"
-
-  kibana:
-    image: kibana:8.2.0
-    container_name: kibana
-    networks:
-      backend:
-        aliases:
-          - kibana
-    ports:
-      - "5601:5601"
-      #volumes:
-      #- $HOME/data/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
-    environment: #https://www.elastic.co/guide/en/kibana/current/docker.html#docker-defaults
-      #SERVER_NAME: kibana.example.org
-      - "ELASTICSEARCH_HOSTS=http://elasticsearch:9200"
-    depends_on:
-      - elasticsearch
-
   grafana:
-    image: grafana/grafana:8.5.2
+    image: grafana/grafana
     container_name: grafana
     networks:
       backend:
@@ -91,7 +58,7 @@ services:
       - $HOME/data/grafana:/var/lib/grafana
 
   prometheus:
-    image: prom/prometheus:v2.35.0
+    image: prom/prometheus
     container_name: prometheus
     networks:
       backend:
