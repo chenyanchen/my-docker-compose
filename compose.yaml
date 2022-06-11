@@ -1,28 +1,14 @@
+# Compose specification: https://docs.docker.com/compose/compose-file/
+
 services:
   # elasticsearch: https://github.com/deviantony/docker-elk
 
-  mysql:
-    image: mysql
-    platform: linux/amd64
-    container_name: mysql
-    volumes:
-      - $HOME/data/mysql:/var/lib/mysql
-    networks:
-      backend:
-        aliases:
-          - mysql
-    ports:
-      - "3306:3306"
-      - "33060:33060"
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: example
-
   redis:
     image: redis
+    #image: redis/redis-stack-server # FIXME: only works on amd64
     container_name: redis
     volumes:
-      - $HOME/data/redis:/data
+      - ~/data/redis:/data
     networks:
       backend:
         aliases:
@@ -30,11 +16,26 @@ services:
     ports:
       - "6379:6379"
 
+  mysql:
+    image: mysql:oracle
+    container_name: mysql
+    volumes:
+      - ~/data/mysql:/var/lib/mysql
+    networks:
+      backend:
+        aliases:
+          - mysql
+    ports:
+      - "3306:3306"
+      - "33060:33060"
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+
   postgres:
     image: postgres
     container_name: postgres
     volumes:
-      - $HOME/data/postgres:/var/lib/postgresql/data
+      - ~/data/postgres:/var/lib/postgresql/data
     networks:
       backend:
         aliases:
@@ -42,8 +43,7 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - "POSTGRES_PASSWORD=999"
-  #      - "PGDATA=/var/lib/postgresql/data"
+      POSTGRES_PASSWORD: example
 
   grafana:
     image: grafana/grafana
@@ -55,7 +55,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - $HOME/data/grafana:/var/lib/grafana
+      - ~/data/grafana:/var/lib/grafana
 
   prometheus:
     image: prom/prometheus
@@ -67,8 +67,8 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - $HOME/data/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - $HOME/data/prometheus:/prometheus
+      - ~/data/prometheus/config:/etc/prometheus
+      - ~/data/prometheus:/prometheus
 
 networks:
   backend:
