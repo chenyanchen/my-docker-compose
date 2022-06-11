@@ -1,4 +1,4 @@
-.PHONY: up
+.PHONY: compose
 
-up:
+compose:
 	docker-compose -p stack up -d
