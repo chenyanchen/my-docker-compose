@@ -4,7 +4,7 @@ services:
   # elasticsearch: https://github.com/deviantony/docker-elk
 
   redis:
-    image: redis/redis-stack
+    image: redis/redis-stack:7.0.2-RC3
     container_name: redis-stack
     volumes:
       - ~/data/redis:/data
@@ -17,7 +17,7 @@ services:
       - 8001:8001
 
   mysql:
-    image: mysql
+    image: mysql:8.0.31
     container_name: mysql
     volumes:
       - ~/data/mysql:/var/lib/mysql
@@ -32,7 +32,7 @@ services:
       MYSQL_ROOT_PASSWORD: example
 
   postgres:
-    image: postgres
+    image: postgres:15.0
     container_name: postgres
     volumes:
       - ~/data/postgres:/var/lib/postgresql/data
@@ -46,7 +46,7 @@ services:
       POSTGRES_PASSWORD: example
 
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana:9.2.3
     container_name: grafana
     networks:
       backend:
@@ -58,7 +58,7 @@ services:
       - ~/data/grafana:/var/lib/grafana
 
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:v2.39.1
     container_name: prometheus
     networks:
       backend:
