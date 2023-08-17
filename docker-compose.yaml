@@ -1,5 +1,7 @@
 # Compose specification: https://docs.docker.com/compose/compose-file/
 
+name: dev
+
 services:
   # elasticsearch: https://github.com/deviantony/docker-elk
 
@@ -7,7 +9,7 @@ services:
     image: redis/redis-stack
     container_name: redis-stack
     volumes:
-      - ~/data/redis:/data
+      - redis:/data
     networks:
       backend:
         aliases:
@@ -20,7 +22,7 @@ services:
     image: mysql
     container_name: mysql
     volumes:
-      - ~/data/mysql:/var/lib/mysql
+      - mysql:/var/lib/mysql
     networks:
       backend:
         aliases:
@@ -35,7 +37,7 @@ services:
     image: postgres
     container_name: postgres
     volumes:
-      - ~/data/postgres:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
     networks:
       backend:
         aliases:
@@ -55,7 +57,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ~/data/grafana:/var/lib/grafana
+      - grafana:/var/lib/grafana
 
   prometheus:
     image: prom/prometheus
@@ -67,9 +69,15 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ~/data/prometheus/config:/etc/prometheus
-      - ~/data/prometheus:/prometheus
+      - prometheus:/etc/prometheus
 
 networks:
   backend:
     name: backend
+
+volumes:
+  mysql:
+  postgres:
+  redis:
+  grafana:
+  prometheus:
