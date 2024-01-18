@@ -1,4 +1,4 @@
 .PHONY: compose
 
 compose:
-	docker-compose -p stack up -d
+	docker compose -p stack up -d
