@@ -31,7 +31,7 @@ services:
       - "3306:3306"
       - "33060:33060"
     environment:
-      MYSQL_ROOT_PASSWORD: example
+      MYSQL_ROOT_PASSWORD: 2zWHWfxyVV8gLFt+S03lGkWs07mHfOk4
 
   postgres:
     image: postgres
@@ -45,7 +45,20 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_PASSWORD: example
+      POSTGRES_PASSWORD: 2zWHWfxyVV8gLFt+S03lGkWs07mHfOk4
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    networks:
+      backend:
+        aliases:
+          - pgadmin
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: c745539141@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: 2zWHWfxyVV8gLFt+S03lGkWs07mHfOk4
 
   grafana:
     image: grafana/grafana
@@ -71,6 +84,18 @@ services:
     volumes:
       - prometheus:/etc/prometheus
 
+  influxdb:
+    image: influxdb
+    container_name: influxdb
+    networks:
+      backend:
+        aliases:
+          - influxdb
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb:/var/lib/influxdb2
+
 networks:
   backend:
     name: backend
@@ -81,3 +106,4 @@ volumes:
   redis:
   grafana:
   prometheus:
+  influxdb:
