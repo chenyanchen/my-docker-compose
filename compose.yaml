@@ -1,5 +1,12 @@
-# Compose specification: https://docs.docker.com/compose/compose-file/
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Docker Compose reference guide at
+# https://docs.docker.com/go/compose-spec-reference/
 
+# Here the instructions define your application as a service called "app".
+# This service is built from the Dockerfile in the current directory.
+# You can add other services your application may depend on here, such as a
+# database or a cache. For examples, see the Awesome Compose repository:
+# https://github.com/docker/awesome-compose
 name: dev
 
 services:
@@ -15,8 +22,8 @@ services:
         aliases:
           - redis
     ports:
-      - 6379:6379
-      - 8001:8001
+      - "6379:6379"
+      - "8001:8001"
 
   mysql:
     image: mysql
@@ -30,8 +37,10 @@ services:
     ports:
       - "3306:3306"
       - "33060:33060"
+    secrets:
+      - password
     environment:
-      MYSQL_ROOT_PASSWORD: 2zWHWfxyVV8gLFt+S03lGkWs07mHfOk4
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/password
 
   postgres:
     image: postgres
@@ -44,21 +53,10 @@ services:
           - postgres
     ports:
       - "5432:5432"
+    secrets:
+      - password
     environment:
-      POSTGRES_PASSWORD: 2zWHWfxyVV8gLFt+S03lGkWs07mHfOk4
-
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin
-    networks:
-      backend:
-        aliases:
-          - pgadmin
-    ports:
-      - "5050:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: c745539141@gmail.com
-      PGADMIN_DEFAULT_PASSWORD: 2zWHWfxyVV8gLFt+S03lGkWs07mHfOk4
+      POSTGRES_PASSWORD_FILE: /run/secrets/password
 
   grafana:
     image: grafana/grafana
@@ -95,6 +93,10 @@ services:
     restart: unless-stopped
     volumes:
       - "/:/host:ro,rslave"
+
+secrets:
+  password:
+    file: ./password.txt
 
 networks:
   backend:
